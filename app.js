@@ -1,6 +1,8 @@
 const express = require('express')
 const exphbs = require('express-handlebars')
 const mongoose = require('mongoose')
+const shortenURL = require('./models/shortenURL')
+const generateRandomString = require('./generateRandomString')
 const port = 3000
 
 const app = express()
@@ -22,8 +24,12 @@ app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
 
 app.get('/', (req, res) => {
-  res.render('index', {})
-  console.log('short_URL progect running')
+  console.log(req.query)
+  let randomString = generateRandomString()
+  console.log(randomString, typeof (randomString))
+  shortenURL.create({ inputURL: `${req.query.inputURL}`, randomString: `${randomString}` })
+    .then(() => res.render('index', {}))
+    .catch(error => { console.log('error') })
 })
 
 app.listen(port, () => {
