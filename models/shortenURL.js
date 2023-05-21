@@ -5,10 +5,14 @@ const shortenURL = new Schema({
     type: String,
     required: true
   },
-  randomString: {
-    type: String,
+  // randomString: {
+  //   type: String,
+  //   require: true
+  // },
+  outputURL: {
+    type:String,
     require: true
-  },
+  }
 })
 
 module.exports=mongoose.model('ShortenURL',shortenURL)

@@ -12,7 +12,7 @@ function generateRandomString() {
   collection = collection.concat(lowerCaseLetters.split(''))
   collection = collection.concat(upperCaseLetters.split(''))
   collection = collection.concat(numbers.split(''))
-  console.log(collection)
+  // console.log(collection)
 
   let RandomString = ''
   for (let i = 0; i < 5; i++) {
@@ -20,7 +20,7 @@ function generateRandomString() {
   }
 
 
-  console.log(RandomString)
+  // console.log(RandomString)
   return RandomString
 }
 
