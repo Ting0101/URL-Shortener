@@ -1,26 +1,13 @@
 const express = require('express')
 const exphbs = require('express-handlebars')
-const mongoose = require('mongoose')
 const shortenURL = require('./models/shortenURL')
 const generateRandomString = require('./generateRandomString')
 const bodyParser = require('body-parser')
 const port = 3000
 const server = `http://localhost:3000/`
 
+require('./config/mongoose')
 const app = express()
-
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
-
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-const db = mongoose.connection
-db.on('error', () => {
-  console.log('mongodb error!')
-})
-db.once('open', () => {
-  console.log('mongodb connected!')
-})
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
@@ -31,6 +18,8 @@ app.get('/', (req, res) => {
   res.render('index', {})
 })
 
+//輸入網址後資料庫先查詢inputURL是否存在，
+//若存在輸出outputURL，若不存在則創建一個存於資料庫中
 app.post('/', (req, res) => {
   const inputURL = req.body.inputURL
   let randomString = generateRandomString()
@@ -50,8 +39,9 @@ app.post('/', (req, res) => {
     .catch(error => { console.log('error') })
 })
 
-app.get('/:randomString', (req, res) => {
-  const string = req.params.randomString
+//短網址輸入後，資料庫查找後直接輸出，連結原始網址
+app.get('/:string', (req, res) => {
+  const string = req.params.string
   const outputURL = server + string
   shortenURL.findOne({ outputURL })
     .then((item) => res.redirect(item.inputURL))
