@@ -32,13 +32,21 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
-  // console.log(req.body)
   const inputURL = req.body.inputURL
   let randomString = generateRandomString()
   const outputURL = server + `${randomString}`
 
-  shortenURL.create({ inputURL, outputURL })
-    .then(() => res.render('show', { successURL: outputURL }))
+  shortenURL.findOne({ inputURL })
+    .lean()
+    .then((item) => {
+      if (item) {
+        res.render('show', { successURL: item.outputURL })
+      } else {
+        shortenURL.create({ inputURL, outputURL })
+          .then(() => res.render('show', { successURL: outputURL }))
+          .catch(error => { console.log('create error') })
+      }
+    })
     .catch(error => { console.log('error') })
 })
 
@@ -46,8 +54,8 @@ app.get('/:randomString', (req, res) => {
   const string = req.params.randomString
   const outputURL = server + string
   shortenURL.findOne({ outputURL })
-    .then((shortenURL) => res.redirect(shortenURL.inputURL))
-    .catch((err) => console.log(err))
+    .then((item) => res.redirect(item.inputURL))
+    .catch((error) => console.log('error'))
 })
 
 app.listen(port, () => {
