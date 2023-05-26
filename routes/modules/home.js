@@ -13,15 +13,14 @@ router.get('/', (req, res) => {
 //若存在輸出outputURL，若不存在則創建一個存於資料庫中
 router.post('/', (req, res) => {
   const inputURL = req.body.inputURL
-  let randomString = generateRandomString()
-  const outputURL = server + `${randomString}`
-
   shortenURL.findOne({ inputURL })
     .lean()
     .then((item) => {
       if (item) {
         res.render('show', { successURL: item.outputURL })
       } else {
+        let randomString = generateRandomString()
+        const outputURL = server + `${randomString}`
         shortenURL.create({ inputURL, outputURL })
           .then(() => res.render('show', { successURL: outputURL }))
           .catch(error => { console.log('create error') })

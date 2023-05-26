@@ -2,8 +2,16 @@
   <nav>
     <div class="mb-2">
       <h2>Success! please use this link:</h2>
-      <a class="fs-4"  href="{{successURL}}">{{successURL}}</a>
+      <a class="fs-4" id="copyElement" href="{{successURL}}">{{successURL}}</a>
     </div>
-    <button href="/" class="btn btn-outline-primary d-grid col-3 mx-auto ">Copy</button>
+    <button onclick="myFunction()" class="btn btn-outline-primary d-grid col-3 mx-auto ">Copy</button>
   </nav>
 </nav>
+
+<script>
+  function myFunction() {
+    const copyElement = document.querySelector("#copyElement")
+    navigator.clipboard.writeText(copyElement);
+    alert("短網址已複製: " + copyElement);
+  }
+</script>
